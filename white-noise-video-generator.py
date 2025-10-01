@@ -65,7 +65,7 @@ class App(tk.Tk):
         self.mainloop()
 
     def run_white_noise(self):
-        frame = Image.fromarray(np.random.randint(low=0, high=255, size=(self.image_display.height, self.image_display.width), dtype=np.uint8))
+        frame = Image.fromarray(np.random.randint(low=0, high=256, size=(self.image_display.height, self.image_display.width), dtype=np.uint8))
         self.image_display.show_image(frame)
         self.after(20, self.run_white_noise)
 
