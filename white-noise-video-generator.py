@@ -11,9 +11,7 @@ class ImageDisplay(tk.Toplevel):
 
         super().__init__()
 
-        # Get information about all monitors
         monitors = screeninfo.get_monitors()
-
 
 
         if len(monitors) <= monitor:
