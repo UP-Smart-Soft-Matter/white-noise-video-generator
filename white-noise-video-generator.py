@@ -5,10 +5,6 @@ import tkinter as tk
 
 monitor = 0
 
-def generate_white_noise_frame(width, height):
-    return Image.fromarray(np.random.randint(low=0, high=255, size=(height, width), dtype=np.uint8))
-
-
 class ImageDisplay(tk.Toplevel):
     def __init__(self, monitor: int):
         assert isinstance(monitor, int) and monitor >= 0, "Monitor must be a non-negative integer!"
@@ -71,7 +67,7 @@ class App(tk.Tk):
         self.mainloop()
 
     def run_white_noise(self):
-        frame = generate_white_noise_frame(self.image_display.width, self.image_display.height)
+        frame = Image.fromarray(np.random.randint(low=0, high=255, size=(self.image_display.height, self.image_display.width), dtype=np.uint8))
         self.image_display.show_image(frame)
         self.after(20, self.run_white_noise)
 
