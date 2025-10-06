@@ -2,8 +2,13 @@ import numpy as np
 import screeninfo
 from PIL import Image, ImageTk
 import tkinter as tk
+import math
 
 monitor = 0
+fps = 1
+temporal_white_noise = True
+
+period = math.ceil(1/fps * 1000)
 
 class ImageDisplay(tk.Toplevel):
     def __init__(self, monitor: int):
@@ -60,14 +65,24 @@ class App(tk.Tk):
 
         self.protocol("WM_DELETE_WINDOW")
 
-        self.run_white_noise()
+        if temporal_white_noise:
+            self.run_temporal_solid_noise()
+        else:
+            self.run_spatial_white_noise()
+
 
         self.mainloop()
 
-    def run_white_noise(self):
+    def run_spatial_white_noise(self):
         frame = Image.fromarray(np.random.randint(low=0, high=256, size=(self.image_display.height, self.image_display.width), dtype=np.uint8))
         self.image_display.show_image(frame)
-        self.after(20, self.run_white_noise)
+        self.after(period, self.run_spatial_white_noise)
+
+    def run_temporal_solid_noise(self):
+        random_grayscale_value = np.random.randint(low=0, high=256)
+        frame = Image.fromarray(np.full((self.image_display.height, self.image_display.width), random_grayscale_value, dtype=np.uint8))
+        self.image_display.show_image(frame)
+        self.after(period, self.run_temporal_solid_noise)
 
 
 App(monitor)
