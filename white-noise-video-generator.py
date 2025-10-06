@@ -5,6 +5,7 @@ import tkinter as tk
 import math
 
 monitor = 0
+# max. FPS for SLM is 60
 fps = 1
 temporal_white_noise = True
 
