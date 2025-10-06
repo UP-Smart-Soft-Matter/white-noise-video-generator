@@ -66,7 +66,7 @@ class App(tk.Tk):
         self.protocol("WM_DELETE_WINDOW")
 
         if temporal_white_noise:
-            self.run_temporal_solid_noise()
+            self.run_temporal_white_noise()
         else:
             self.run_spatial_white_noise()
 
@@ -78,11 +78,11 @@ class App(tk.Tk):
         self.image_display.show_image(frame)
         self.after(period, self.run_spatial_white_noise)
 
-    def run_temporal_solid_noise(self):
+    def run_temporal_white_noise(self):
         random_grayscale_value = np.random.randint(low=0, high=256)
         frame = Image.fromarray(np.full((self.image_display.height, self.image_display.width), random_grayscale_value, dtype=np.uint8))
         self.image_display.show_image(frame)
-        self.after(period, self.run_temporal_solid_noise)
+        self.after(period, self.run_temporal_white_noise)
 
 
 App(monitor)
