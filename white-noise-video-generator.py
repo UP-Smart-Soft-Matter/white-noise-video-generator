@@ -1,3 +1,4 @@
+from tkinter import ttk
 import numpy as np
 import screeninfo
 from PIL import Image, ImageTk
@@ -61,6 +62,31 @@ class App(tk.Tk):
         self.protocol("WM_DELETE_WINDOW")
 
         self.run_white_noise()
+
+        self.title("white noise video generator")
+
+        self.label_fps = tk.Label(self, text="FPS (1-50)")
+        self.label_fps.config(font=('', '20'))
+        self.label_fps.pack()
+
+        self.slider_fps = tk.Scale(self, from_=1, to=50, orient=tk.HORIZONTAL, length=500)
+        self.slider_fps.pack()
+
+        self.label_Grayscale_min = tk.Label(self, text="Minimal grayscale value (inclusive lower bound)")
+        self.label_Grayscale_min.config(font=('', '20'))
+        self.label_Grayscale_min.pack()
+
+        self.slider_grayscale_min = tk.Scale(self, from_=0, to=255, orient=tk.HORIZONTAL, length=500)
+        self.slider_grayscale_min.pack()
+
+        self.label_Grayscale_max = tk.Label(self, text="Maximal grayscale value (exclusive upper bound)")
+        self.label_Grayscale_max.config(font=('', '20'))
+        self.label_Grayscale_max.pack()
+
+        self.label_Grayscale_max = tk.Scale(self, from_=0, to=256, orient=tk.HORIZONTAL, length=500)
+        self.label_Grayscale_max.pack()
+
+
 
         self.mainloop()
 
