@@ -11,7 +11,10 @@ from tkinter import messagebox
 
 monitor = 1
 # max. FPS for SLM is 60
-fps = 10
+fps = 15
+N = 500
+bins_gs = 256
+bins_azimuth = 180
 temporal_white_noise = True
 
 period = math.ceil(1/fps * 1000)
@@ -73,7 +76,6 @@ class App(tk.Tk):
 
         self.measure_thread = MeasuringThread()
         self.measure_thread.start()
-        time.sleep(1)
 
         print('PAX1000 starting up')
         while self._is_result_none():
@@ -106,20 +108,25 @@ class App(tk.Tk):
             print(azimuth)
         self.azimuth.append(azimuth)
         self.image_display.show_image(frame)
-        self.after(period, self.run_temporal_white_noise)
+        if len(self.rand_values) >= N:
+            self.show_histogram()
+            self.close()
+        else:
+            self.after(period, self.run_temporal_white_noise)
 
     def show_histogram(self):
-        np.savetxt("histogram.txt", self.rand_values)
+        np.savetxt("grayscale.txt", self.rand_values)
         np.savetxt("azimuth.txt", self.azimuth)
         fig, ax = plt.subplots(1, 2, figsize=(12, 4))
+        fig.suptitle("60 Hz White Noise")
         ax[0].set_title('Histogram Grayscale values')
-        ax[0].hist(self.rand_values, bins=256)
-        ax[0].set_xlabel('Grayscale values')
+        ax[0].hist(self.rand_values, bins=bins_gs)
+        ax[0].set_xlabel(f'Grayscale values ({bins_gs} bins)')
         ax[0].set_ylabel('counts')
         ax[1].set_title('Histogram Azimuth')
-        ax[1].hist(self.azimuth, bins=180)
-        ax[1].set_xlabel('Azimuth in degrees')
-        plt.text(0.5, 0.8, f"N={len(self.rand_values)}", ha='center', va='center')
+        ax[1].hist(self.azimuth, bins=bins_azimuth)
+        ax[1].set_xlabel(f'Azimuth in degrees ({bins_azimuth} bins)')
+        fig.text(0.5, 0.05, f"N={len(self.rand_values)}", ha='left', va='center')
         fig.tight_layout()
         plt.show()
         self.after(1000, self.show_histogram)
@@ -137,6 +144,7 @@ class App(tk.Tk):
     def close(self):
         with self.measure_thread.kill_flag_lock:
             self.measure_thread.kill_flag = True
+        self.destroy()
 
 def init_pax():
     """
