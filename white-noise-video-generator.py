@@ -109,6 +109,8 @@ class App(tk.Tk):
         self.after(period, self.run_temporal_white_noise)
 
     def show_histogram(self):
+        np.savetxt("histogram.txt", self.rand_values)
+        np.savetxt("azimuth.txt", self.azimuth)
         fig, ax = plt.subplots(1, 2, figsize=(12, 4))
         ax[0].set_title('Histogram Grayscale values')
         ax[0].hist(self.rand_values, bins=256)
