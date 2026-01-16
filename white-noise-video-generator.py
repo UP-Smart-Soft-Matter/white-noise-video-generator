@@ -6,8 +6,8 @@ import math
 
 monitor = 0
 # max. FPS for SLM is 60
-fps = 1
-temporal_white_noise = True
+fps = 60
+temporal_white_noise = False
 
 period = math.ceil(1/fps * 1000)
 
