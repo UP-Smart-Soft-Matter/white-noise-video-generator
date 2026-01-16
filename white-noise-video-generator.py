@@ -1,9 +1,11 @@
+import math
+import time
 import numpy as np
 import screeninfo
 from PIL import Image, ImageTk
 import tkinter as tk
 import matplotlib.pyplot as plt
-from pax1000_controller import *
+from pax1000_controller import PAX1000
 import threading
 from tkinter import messagebox
 
@@ -115,6 +117,7 @@ class App(tk.Tk):
         ax[1].set_title('Histogram Azimuth')
         ax[1].hist(self.azimuth, bins=180)
         ax[1].set_xlabel('Azimuth in degrees')
+        plt.text(0.5, 0.8, f"N={len(self.rand_values)}", ha='center', va='center')
         fig.tight_layout()
         plt.show()
         self.after(1000, self.show_histogram)
