@@ -11,8 +11,8 @@ from tkinter import messagebox
 
 monitor = 1
 # max. FPS for SLM is 60
-fps = 15
-N = 500
+fps = 1
+N = 5000
 bins_gs = 256
 bins_azimuth = 180
 temporal_white_noise = True
@@ -87,7 +87,6 @@ class App(tk.Tk):
 
         if temporal_white_noise:
             self.run_temporal_white_noise()
-            self.show_histogram()
         else:
             self.run_spatial_white_noise()
 
@@ -105,9 +104,9 @@ class App(tk.Tk):
         frame = Image.fromarray(np.full((self.image_display.height, self.image_display.width), random_grayscale_value, dtype=np.uint8))
         with self.measure_thread.azimuth_lock:
             azimuth = self.measure_thread.azimuth
-            print(azimuth)
         self.azimuth.append(azimuth)
         self.image_display.show_image(frame)
+        print(f"{len(self.azimuth)}/{N}: azimuth={azimuth}")
         if len(self.rand_values) >= N:
             self.show_histogram()
             self.close()
@@ -118,7 +117,7 @@ class App(tk.Tk):
         np.savetxt("grayscale.txt", self.rand_values)
         np.savetxt("azimuth.txt", self.azimuth)
         fig, ax = plt.subplots(1, 2, figsize=(12, 4))
-        fig.suptitle("60 Hz White Noise")
+        fig.suptitle(f"{fps} Hz White Noise")
         ax[0].set_title('Histogram Grayscale values')
         ax[0].hist(self.rand_values, bins=bins_gs)
         ax[0].set_xlabel(f'Grayscale values ({bins_gs} bins)')
@@ -129,7 +128,6 @@ class App(tk.Tk):
         fig.text(0.5, 0.05, f"N={len(self.rand_values)}", ha='left', va='center')
         fig.tight_layout()
         plt.show()
-        self.after(1000, self.show_histogram)
 
     def _is_result_none(self):
         with (self.measure_thread.azimuth_lock):
@@ -160,7 +158,7 @@ def init_pax():
     """
     while True:
         try:
-            pax = PAX1000()
+            pax = PAX1000(base_scan_rate=120, measurement_mode=6)
             return pax
         except Exception:
             messagebox.showerror("Error", "No PAX 1000 found, please connect device and try again")
